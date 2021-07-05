@@ -2,10 +2,14 @@ from django.shortcuts import render,get_object_or_404,redirect
 from .models import Blog
 from django.utils import timezone
 from .forms import BlogForm
+from django.core.paginator import Paginator
 
 # Create your views here.
 def home(request):
-    blogs = Blog.objects.all()
+    blogs = Blog.objects.order_by('-pub_date')
+    paginator = Paginator(blogs,3)
+    page= request.GET.get('page')
+    blogs = paginator.get_page(page)
     return render(request,'home.html',{'blogs':blogs})
 
 def detail(request, id):
